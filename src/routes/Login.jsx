@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { InputStyle } from "../components/Input";
 import styled from "styled-components";
@@ -23,7 +23,8 @@ export default function Login() {
 
         const promise = axios.post(`${process.env.REACT_APP_API_URL}/sign-in`, body)
         promise.then(res => {
-            localStorage.setItem('token', JSON.stringify(res.data))
+            localStorage.setItem('token', JSON.stringify(res.data.token))
+            localStorage.setItem('user', JSON.stringify(res.data.name))
 
             navigate('/home')
         })
