@@ -11,6 +11,7 @@ export default function Home() {
     name = name[0].toUpperCase() + name.substring(1)
 
     const [registries, setRegistries] = useState(null)
+    const [total, setTotal] = useState('')
 
     useEffect(() => {
 
@@ -23,8 +24,8 @@ export default function Home() {
         const promise = axios.get(`${process.env.REACT_APP_API_URL}/registries`, config)
         promise.then(res => {
             const data = res.data
-            console.log(data)
             setRegistries(data.registries)
+            setTotal(data.total)
         })
         promise.catch(err => {
             console.log(err.response.data)
@@ -39,9 +40,28 @@ export default function Home() {
                     <h2>Olá, {name}</h2>
                     <img src={signOut} alt="signOut" />
                 </Header>
-                <Registries>
-                    {(registries) ? registries.map(reg => <div key={reg._id}>{reg.description}</div>) : <p>Não há registros</p>}
-                </Registries>
+                <RegistriesTable positive={(total >= 0) ? true : false}>
+                    {(registries && registries.length !== 0) ?
+                        <div>
+                            <div>
+                                {registries.map(reg =>
+                                    <Registrie type={reg.type} key={reg._id}>
+                                        <div>
+                                            <p>{reg.date}</p>
+                                            <p>{reg.description}</p>
+                                        </div>
+                                        <p>{String(reg.value.toFixed(2)).replace('.', ',')}</p>
+                                    </Registrie>
+                                )}
+                            </div>
+                            <div>
+                                <p>SALDO</p>
+                                <p>{String(total.toFixed(2)).replace('.', ',')}</p>
+                            </div>
+                        </div> :
+                        <p>Não há registros de entrada ou saída</p>
+                    }
+                </RegistriesTable>
                 <ButtonsContainer>
                     <ButtonReg>
                         <img src={More} alt="More" />
@@ -88,13 +108,47 @@ const Header = styled.div`
         height: 85%;
     }
 `
-const Registries = styled.div`
+const RegistriesTable = styled.div`
     display: flex;
     height: 70%;
+    font-size: 20px;
+    justify-content: center;
 
     border: none;
     border-radius: 5px;
+    padding: 10px;
     background-color: #FFFFFF;
+
+    >div{
+        display: flex;
+        flex-direction:column;
+
+        justify-content: space-between;
+
+        width: 100%;
+
+        >:nth-child(2){
+            display: flex;
+            justify-content: space-between;
+
+            >:nth-child(1){
+                font-weight: 700;
+            }
+            >:nth-child(2){
+                color: ${props => (props.positive) ? 'green' : 'red'};
+            }
+        }
+    }
+
+    >p{
+        display: flex;
+        width: 70%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #868686;
+    }
 `
 const ButtonReg = styled.div`
     display: flex;
@@ -128,4 +182,28 @@ const ButtonsContainer = styled.div`
     justify-content: space-between;
     height: 20%;
 
+`
+const Registrie = styled.div`
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+
+    font-size: 16px;
+
+    margin: 10px 0;
+    >div{
+        display: flex;
+
+        >:nth-child(1){
+            color: gray;
+            margin-right: 10px;
+        }
+
+    }
+
+    >p{
+
+        color: ${props => (props.type === 'entrada') ? 'green' : 'red'};
+    }
 `
