@@ -4,6 +4,7 @@ import Less from '../assets/img/Less.png'
 import More from '../assets/img/More.png'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Home() {
     let name = JSON.parse(localStorage.getItem('user'))
@@ -12,6 +13,8 @@ export default function Home() {
 
     const [registries, setRegistries] = useState(null)
     const [total, setTotal] = useState('')
+
+    const navigate = useNavigate()
 
     useEffect(() => {
 
@@ -38,7 +41,7 @@ export default function Home() {
             <div>
                 <Header>
                     <h2>Olá, {name}</h2>
-                    <img src={signOut} alt="signOut" />
+                    <Link to={'/'}><img src={signOut} alt="signOut" /></Link>
                 </Header>
                 <RegistriesTable positive={(total >= 0) ? true : false}>
                     {(registries && registries.length !== 0) ?
@@ -63,11 +66,11 @@ export default function Home() {
                     }
                 </RegistriesTable>
                 <ButtonsContainer>
-                    <ButtonReg>
+                    <ButtonReg onClick={() => navigate('/nova-entrada')}>
                         <img src={More} alt="More" />
                         <p>Nova entrada</p>
                     </ButtonReg>
-                    <ButtonReg>
+                    <ButtonReg onClick={() => navigate('/nova-saida')}>
                         <img src={Less} alt="Less" />
                         <p>Nova saída</p>
                     </ButtonReg>
@@ -126,6 +129,12 @@ const RegistriesTable = styled.div`
         justify-content: space-between;
 
         width: 100%;
+
+        >:nth-child(1){
+            max-height: 92%;
+
+            overflow-y: scroll;
+        }
 
         >:nth-child(2){
             display: flex;
