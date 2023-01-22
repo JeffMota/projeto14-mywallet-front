@@ -2,19 +2,49 @@ import styled from "styled-components"
 import { InputStyle } from "../components/Input"
 import Button from "../components/Button"
 import Logo from "../assets/img/MyWallet.png"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useState } from "react"
+import axios from "axios"
 
 export default function SignUp() {
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+
+    const navigate = useNavigate()
+
+    function sendSignUpRequest(e) {
+        e.preventDefault()
+
+        const body = {
+            name,
+            email,
+            password,
+            confirmPassword
+        }
+
+        const promise = axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, body)
+        promise.then(res => {
+            alert("Usuário cadastrado com sucesso!")
+            navigate('/')
+        })
+        promise.catch(err => {
+            alert(err.response.data)
+        })
+
+    }
+
     return (
         <SignUpContainer>
             <div>
                 <img src={Logo} alt="Logo" />
-                <FormSignUp>
-                    <InputStyle type="text" placeholder='Nome' />
-                    <InputStyle type="email" placeholder='E-mail' />
-                    <InputStyle type="password" placeholder="Senha" />
-                    <InputStyle type="password" placeholder='Confirme a senha' />
-                    <Button type="submit" text="Entrar" />
+                <FormSignUp onSubmit={e => sendSignUpRequest(e)}>
+                    <InputStyle onChange={e => setName(e.target.value)} type="text" placeholder='Nome' value={name} />
+                    <InputStyle onChange={e => setEmail(e.target.value)} type="email" placeholder='E-mail' value={email} />
+                    <InputStyle onChange={e => setPassword(e.target.value)} type="password" placeholder="Senha" value={password} />
+                    <InputStyle onChange={e => setConfirmPassword(e.target.value)} type="password" placeholder='Confirme a senha' value={confirmPassword} />
+                    <Button type="submit" text="Cadastrar" />
                 </FormSignUp>
                 <p>Já tem uma conta?<Link to={'/'}> Entre agora!</Link></p>
             </div>

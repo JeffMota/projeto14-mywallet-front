@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { InputStyle } from "../components/Input";
 import styled from "styled-components";
 import Logo from "../assets/img/MyWallet.png"
@@ -11,6 +11,8 @@ export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
+    const navigate = useNavigate()
+
     function sendLoginRequest(e) {
         e.preventDefault()
 
@@ -21,10 +23,12 @@ export default function Login() {
 
         const promise = axios.post(`${process.env.REACT_APP_API_URL}/sign-in`, body)
         promise.then(res => {
-            console.log(res.data)
+            localStorage.setItem('token', JSON.stringify(res.data))
+
+            navigate('/home')
         })
         promise.catch(err => {
-            console.log(err)
+            alert(err.response.data)
         })
     }
 
