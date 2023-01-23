@@ -2,7 +2,7 @@ import styled from "styled-components"
 
 export default function Button({ type, text }) {
     return (
-        <ButtonStyle type={type} > {text}</ButtonStyle>
+        <ButtonStyle type={type} >{text}</ButtonStyle>
     )
 }
 

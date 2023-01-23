@@ -5,6 +5,7 @@ import More from '../assets/img/More.png'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
+import { FallingLines } from 'react-loader-spinner'
 
 export default function Home() {
     let name = JSON.parse(localStorage.getItem('user'))
@@ -13,10 +14,12 @@ export default function Home() {
 
     const [registries, setRegistries] = useState(null)
     const [total, setTotal] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
     useEffect(() => {
+        setLoading(true)
 
         const config = {
             headers: {
@@ -29,9 +32,11 @@ export default function Home() {
             const data = res.data
             setRegistries(data.registries)
             setTotal(data.total)
+            setLoading(false)
         })
         promise.catch(err => {
             console.log(err.response.data)
+            setLoading(false)
         })
 
     }, [])
@@ -44,25 +49,32 @@ export default function Home() {
                     <Link to={'/'}><img src={signOut} alt="signOut" /></Link>
                 </Header>
                 <RegistriesTable positive={(total >= 0) ? true : false}>
-                    {(registries && registries.length !== 0) ?
-                        <div>
+                    {(loading) ? <FallingLines
+                        color="#A328D6"
+                        width="70"
+                        visible={true}
+                        ariaLabel='falling-lines-loading'
+                    /> :
+                        (registries && registries.length !== 0) ?
                             <div>
-                                {registries.map(reg =>
-                                    <Registrie type={reg.type} key={reg._id}>
-                                        <div>
-                                            <p>{reg.date}</p>
-                                            <p>{reg.description}</p>
-                                        </div>
-                                        <p>{String(reg.value.toFixed(2)).replace('.', ',')}</p>
-                                    </Registrie>
-                                )}
-                            </div>
-                            <div>
-                                <p>SALDO</p>
-                                <p>{String(total.toFixed(2)).replace('.', ',')}</p>
-                            </div>
-                        </div> :
-                        <p>Não há registros de entrada ou saída</p>
+                                <div>
+                                    {registries.map(reg =>
+                                        <Registrie type={reg.type} key={reg._id}>
+                                            <div>
+                                                <p>{reg.date}</p>
+                                                <p>{reg.description}</p>
+                                            </div>
+                                            <p>{String(reg.value.toFixed(2)).replace('.', ',')}</p>
+                                        </Registrie>
+                                    )}
+                                </div>
+                                <div>
+                                    <p>SALDO</p>
+                                    <p>{String(total.toFixed(2)).replace('.', ',')}</p>
+                                </div>
+                            </div> :
+                            <p>Não há registros de entrada ou saída</p>
+
                     }
                 </RegistriesTable>
                 <ButtonsContainer>

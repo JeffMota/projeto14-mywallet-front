@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { InputStyle } from "../components/Input";
+import { FallingLines } from "react-loader-spinner";
 import styled from "styled-components";
 import Logo from "../assets/img/MyWallet.png"
 import Button from "../components/Button";
@@ -10,11 +11,13 @@ import axios from "axios";
 export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
     function sendLoginRequest(e) {
         e.preventDefault()
+        setLoading(true)
 
         const body = {
             email,
@@ -26,10 +29,12 @@ export default function Login() {
             localStorage.setItem('token', JSON.stringify(res.data.token))
             localStorage.setItem('user', JSON.stringify(res.data.name))
 
+            setLoading(false)
             navigate('/home')
         })
         promise.catch(err => {
             alert(err.response.data)
+            setLoading(false)
         })
     }
 
@@ -38,9 +43,21 @@ export default function Login() {
             <div>
                 <img src={Logo} alt="Logo" />
                 <FormLogin onSubmit={e => sendLoginRequest(e)}>
-                    <InputStyle onChange={e => setEmail(e.target.value)} type="email" placeholder='E-mail' value={email} />
-                    <InputStyle onChange={e => setPassword(e.target.value)} type="password" placeholder="Senha" value={password} />
-                    <Button type="submit" text="Entrar" />
+                    <InputStyle disabled={loading} onChange={e => setEmail(e.target.value)} type="email" placeholder='E-mail' value={email} />
+                    <InputStyle disabled={loading} onChange={e => setPassword(e.target.value)} type="password" placeholder="Senha" value={password} />
+                    <Button
+                        disabled={loading}
+                        type="submit"
+                        text={(loading) ?
+                            <FallingLines
+                                color="#FFFF"
+                                width="50"
+                                visible={true}
+                                ariaLabel='falling-lines-loading'
+                            /> :
+                            "Entrar"
+                        }
+                    />
                 </FormLogin>
                 <p>Primeira vez?<Link to={'/cadastro'}> Cadastre-se!</Link></p>
             </div>

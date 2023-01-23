@@ -4,6 +4,7 @@ import Button from "../components/Button"
 import Logo from "../assets/img/MyWallet.png"
 import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react"
+import { FallingLines } from "react-loader-spinner"
 import axios from "axios"
 
 export default function SignUp() {
@@ -11,11 +12,13 @@ export default function SignUp() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
     function sendSignUpRequest(e) {
         e.preventDefault()
+        setLoading(true)
 
         const body = {
             name,
@@ -27,10 +30,12 @@ export default function SignUp() {
         const promise = axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, body)
         promise.then(res => {
             alert("Usuário cadastrado com sucesso!")
+            setLoading(false)
             navigate('/')
         })
         promise.catch(err => {
             alert(err.response.data)
+            setLoading(false)
         })
 
     }
@@ -40,11 +45,22 @@ export default function SignUp() {
             <div>
                 <img src={Logo} alt="Logo" />
                 <FormSignUp onSubmit={e => sendSignUpRequest(e)}>
-                    <InputStyle onChange={e => setName(e.target.value)} type="text" placeholder='Nome' value={name} />
-                    <InputStyle onChange={e => setEmail(e.target.value)} type="email" placeholder='E-mail' value={email} />
-                    <InputStyle onChange={e => setPassword(e.target.value)} type="password" placeholder="Senha" value={password} />
-                    <InputStyle onChange={e => setConfirmPassword(e.target.value)} type="password" placeholder='Confirme a senha' value={confirmPassword} />
-                    <Button type="submit" text="Cadastrar" />
+                    <InputStyle disabled={loading} onChange={e => setName(e.target.value)} type="text" placeholder='Nome' value={name} />
+                    <InputStyle disabled={loading} onChange={e => setEmail(e.target.value)} type="email" placeholder='E-mail' value={email} />
+                    <InputStyle disabled={loading} onChange={e => setPassword(e.target.value)} type="password" placeholder="Senha" value={password} />
+                    <InputStyle disabled={loading} onChange={e => setConfirmPassword(e.target.value)} type="password" placeholder='Confirme a senha' value={confirmPassword} />
+                    <Button
+                        disabled={loading}
+                        type="submit"
+                        text={(loading) ?
+                            <FallingLines
+                                color="#FFFF"
+                                width="100"
+                                visible={true}
+                                ariaLabel='falling-lines-loading'
+                            /> :
+                            "Cadastrar"}
+                    />
                 </FormSignUp>
                 <p>Já tem uma conta?<Link to={'/'}> Entre agora!</Link></p>
             </div>
