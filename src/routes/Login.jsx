@@ -65,7 +65,7 @@ const LoginContainer = styled.div`
         justify-content: space-between;
 
         width: 90%;
-        height: 50%;
+        height: 300px;
 
         margin-top: 50px;
 
@@ -94,7 +94,7 @@ const FormLogin = styled.form`
     flex-direction: column;
 
     justify-content: space-between;
-    height: 60%;
+    height: 200px;
     width: 100%;
-
+    
 `

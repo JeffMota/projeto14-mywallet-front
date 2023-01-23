@@ -60,7 +60,6 @@ const SignUpContainer = styled.div`
     justify-content: center;
 
     width: 100%;
-    height: 100vh;
 
     > div{
         display: flex;
@@ -69,7 +68,7 @@ const SignUpContainer = styled.div`
         justify-content: space-between;
 
         width: 90%;
-        height: 65%;
+        height: 450px;
 
         margin-top: 50px;
 
@@ -98,7 +97,7 @@ const FormSignUp = styled.form`
     flex-direction: column;
 
     justify-content: space-between;
-    height: 75%;
+    height: 350px;
     width: 100%;
 
 `
