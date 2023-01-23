@@ -89,7 +89,7 @@ const WithdrawContainer = styled.div`
         justify-content: space-between;
 
         width: 90%;
-        height: 40%;
+        height: 250px;
 
         >div{
             display: flex;

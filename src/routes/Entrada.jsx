@@ -88,7 +88,7 @@ const EntryContainer = styled.div`
         justify-content: space-between;
 
         width: 90%;
-        height: 40%;
+        height: 250px;
 
         >div{
             display: flex;
@@ -110,6 +110,7 @@ const FormEntry = styled.form`
     flex-direction: column;
 
     justify-content: space-between;
+
     height: 73%;
     width: 100%;
 
